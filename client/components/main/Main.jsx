@@ -87,7 +87,7 @@ export default function Main() {
           <div className="main-howto-service-arrow">▶</div>
           <div className="main-howto-service-step">
             <div className="main-howto-service-img" style={{ backgroundImage: `url('/icons/service3.png')` }}></div>
-            <p>채팅을 통해 대화하며 자세한 종율 후 매칭됩니다.</p>
+            <p>채팅을 통해 대화하며 자세한  후 매칭됩니다.</p>
           </div>
           <div className="main-howto-service-arrow">▶</div>
           <div className="main-howto-service-step">
