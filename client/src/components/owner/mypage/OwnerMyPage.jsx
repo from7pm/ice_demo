@@ -8,7 +8,6 @@ import InquiryHistory from './InquiryHistory.jsx' // 문의내역
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { uploadProfileImageThunk } from '../../../store/thunks/authThunk.js';
-import { getOwnerStats } from '../../../api/axiosOwner.js';
 
 export default function OwnerMyPage() {
   const navigate = useNavigate();
@@ -19,7 +18,7 @@ export default function OwnerMyPage() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [activeTab, setActiveTab] = useState('받은 견적');
   const [isModalOpen, setIsModalOpen] = useState(false); // 프로필 모달
-  const [stats, setStats] = useState(null); // 상단 통계용
+  const stats = { completedReservations: 0, reviewCount: 0, totalReservations: 0, estimateCount: 0 }; // 데모 통계
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -31,20 +30,6 @@ export default function OwnerMyPage() {
       default: return <div style={{padding: '20px'}}>준비 중인 페이지입니다.</div>;
     }
   };
-
-  // 상단 통계용
-  useEffect(() => {
-    const fetchStats = async() => {
-      try {
-        const statsData = await getOwnerStats();
-        setStats(statsData);
-      } catch (error) {
-        console.error('마이페이지 통계 로딩 실패:', error);
-      }
-    };
-
-    fetchStats();
-  }, []);
 
   // 미리보기 업뎃
   useEffect(() => {
