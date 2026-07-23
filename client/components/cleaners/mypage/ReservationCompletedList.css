@@ -1,0 +1,138 @@
+.reservation-completedlist-container {
+  width: 100%;
+  padding-bottom: 2rem;
+}
+
+.reservation-completedlist-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 1.25rem; 
+}
+
+.reservation-completedlist-card {
+  padding: 1.25rem;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+.reservation-completedlist-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-completedlist-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-row { margin-bottom: 1rem; }
+
+.reservation-completedlist-store-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.map-icon {
+  color: #3b82f6;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.reservation-completedlist-store-name {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #111827;
+}
+
+.reservation-completedlist-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background-color: #ebf5ff;
+  color: #3b82f6;
+}
+
+.reservation-completedlist-divider {
+  border: 0;
+  border-top: 1px solid #f3f4f6;
+  margin-bottom: 1rem;
+}
+
+.reservation-completedlist-info-section { flex: 1; }
+
+.reservation-completedlist-info-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.reservation-completedlist-label {
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reservation-completedlist-value { font-weight: 600; color: #374151; }
+.reservation-completedlist-value.highlight { color: #3b82f6; }
+
+/* 버튼 그룹 */
+.reservation-completedlist-btn-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 1.25rem;
+}
+
+.reservation-completedlist-secondary-btn, 
+.reservation-completedlist-primary-btn {
+  padding: 0.75rem 0;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  text-align: center;
+}
+
+.reservation-completedlist-card-value {
+  color: #1f2937; /* 진한 회색 */
+  text-align: right; /* 오른쪽 정렬 */
+  flex: 1; /* 남은 공간 차지 */
+}
+
+/* 작업이 없을 때 메시지 */
+.reservatoin-no-data {
+  display: flex;
+  justify-content: center;  /* 가로 중앙 */
+  align-items: center;      /* 세로 중앙 */
+  width: 100%;             /* 전체 너비를 차지해야 정중앙 정렬이 가능합니다 */
+  min-height: 300px;        /* 200px보다 조금 더 높게 잡으면 화면 중앙에 더 가깝게 느껴집니다 */
+  
+  margin: 0 auto;           /* 컨테이너 자체를 중앙으로 */
+  text-align: center;
+  color: #888888;
+  font-size: 1rem;
+}
+
+
+.reservation-completedlist-secondary-btn { background-color: #f3f4f6; color: #4b5563; }
+.reservation-completedlist-primary-btn { background-color: #3b82f6; color: #ffffff; }
+
+@media (max-width: 1024px) { .reservation-completedlist-cards { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px) {
+  .reservation-completedlist-cards { grid-template-columns: 1fr; }
+  .reservation-completedlist-btn-group { grid-template-columns: 1fr 1fr; }
+}
