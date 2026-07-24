@@ -5,15 +5,17 @@ import Main from "./components/main/Main.jsx"
 import Footer from "./components/main/Footer.jsx"
 import MobileBottomNav from "./components/main/MobileBottomNav.jsx";
 import React from 'react';
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   const location = useLocation();
-  
+
   const isChatpage = location.pathname.includes('/chatroom');
 
   const isAdminpage = location.pathname.includes('/hospital');
-  
+
   return (
+
     <div className="App app-wrapper">
       {/* 관리자페이지 헤더 */}
       {!isAdminpage && <Header />}
@@ -21,11 +23,13 @@ function App() {
         <Outlet />
       </main>
       {/* 데스크톱 푸터 */}
-      {!isChatpage && !isAdminpage && <Footer className="desktop-footer"/>}
+      {!isChatpage && !isAdminpage && <Footer className="desktop-footer" />}
 
       {/* 모바일 하단 네이게이션 */}
       {!isAdminpage && <MobileBottomNav />}
+      <Analytics />
     </div>
+
   )
 }
 
