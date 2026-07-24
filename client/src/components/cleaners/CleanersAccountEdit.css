@@ -60,6 +60,15 @@
   margin-top: 0.5rem;
 }
 
+.cleaners-account-edit-add-icon-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
 .cleaners-account-edit-toggle-updown-new-contents {
   display: block;
   overflow: hidden;

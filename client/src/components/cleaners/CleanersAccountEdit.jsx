@@ -11,7 +11,6 @@ import banksThunk from "../../store/thunks/banksThunk.js";
 
 function CleanerAccountEdit() {
   const dispatch = useDispatch();
-  const { bankList } = useSelector(state => state.banks);
   const [toggleNew, setToggleNew] = useState(true);
   const [toggleInfo, setToggleInfo] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -21,6 +20,16 @@ function CleanerAccountEdit() {
   const { account } = useSelector((state) => state.cleaners);
 
   // 계좌 정보 작성 및 수정용 state
+  const { bankList: rawBankList } = useSelector(
+    (state) => state.banks
+  );
+
+  const bankList = Array.isArray(rawBankList)
+    ? rawBankList
+    : Array.isArray(rawBankList?.rows)
+      ? rawBankList.rows
+      : [];
+
   const [accountInfo, setAccountInfo] = useState({
     id: '',
     cleanerId: '',
@@ -45,11 +54,11 @@ function CleanerAccountEdit() {
         depositor: account.depositor,
         accountNumber: account.accountNumber,
       };
-  
+
       setAccountInfo(newAccountInfo);
     }
 
-    if(account) init();
+    if (account) init();
   }, [account]);
 
   // 3. 공통 확인 모달 처리 로직
@@ -145,21 +154,24 @@ function CleanerAccountEdit() {
           <div className={toggleNew ? "cleaners-account-edit-toggle-updown-new-contents" : "cleaners-account-edit-toggle-updown-new-contents-closed"}>
             <div className="cleaners-account-edit-form-edit">
               {!isEditing ? (
-                <div className="cleaners-account-edit-new-account-title-wrapper" onClick={() => setIsEditing(true)} style={{ cursor: 'pointer' }}>
+                <div className="cleaners-account-edit-new-account-title-wrapper">
                   <div className="cleaners-account-edit-add-button">
                     <div className="cleaners-account-edit-add-button-text">
-                      <IoMdAddCircleOutline size={20} />
+                      <button
+                        type="button"
+                        className="cleaners-account-edit-add-icon-button"
+                        onClick={() => setIsEditing(true)}
+                        aria-label="정산 계좌 추가"
+                      >
+                        <IoMdAddCircleOutline size={20} />
+                      </button>
+
                       <span className="cleaners-account-edit-new-accounts">
-                        {account ? "계좌 정보 수정하기" : "신규 정산 계좌 추가"}
+                        {account
+                          ? "계좌 정보 수정하기"
+                          : "신규 정산 계좌 추가"}
                       </span>
                     </div>
-                    {account ? (
-                      <p className="cleaners-account-edit-account-message">
-                        현재 등록된 계좌: <br /> <strong>{account?.bank?.name} {account.accountNumber} {account.depositor}</strong>
-                      </p>
-                    ) : (
-                      <p className="cleaners-account-edit-account-message">정산에 사용할 계좌를 등록해 주세요.</p>
-                    )}
                   </div>
                 </div>
               ) : (
@@ -177,11 +189,17 @@ function CleanerAccountEdit() {
                         name="bankCode"
                         value={accountInfo.bankCode || ""}
                         onChange={handleInputChange}
-                        required>
-                        <option value="options" defaultValue>계좌를 선택해 주세요.</option>
-                        {
-                          bankList && bankList.map(item => <option value={item.code}>{item.name}</option>)
-                        }
+                        required
+                      >
+                        <option value="" disabled>
+                          은행을 선택해 주세요.
+                        </option>
+
+                        {bankList.map((item) => (
+                          <option key={item.code} value={item.code}>
+                            {item.name}
+                          </option>
+                        ))}
                       </select>
 
                       <label>계좌번호</label>
