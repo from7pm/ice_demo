@@ -15,8 +15,18 @@ import { CiEdit } from "react-icons/ci"; // 이름 변경 아이콘
 export default function OwnerInfo() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { stores = [], status, error:storeError } = useSelector((state) => state.store);
-  const { user, isLoggedIn, isLoading, error:authError } = useSelector((state) => state.auth);
+  const {
+    stores: rawStores,
+    status,
+    error: storeError,
+  } = useSelector((state) => state.store);
+
+  const stores = Array.isArray(rawStores)
+    ? rawStores
+    : Array.isArray(rawStores?.rows)
+      ? rawStores.rows
+      : [];
+  const { user, isLoggedIn, isLoading, error: authError } = useSelector((state) => state.auth);
   // 전화번호 상태 (수정 가능하게)
   const [phonePrefix, setPhonePrefix] = useState("010");
   const [phoneMiddle, setPhoneMiddle] = useState("");
@@ -44,7 +54,7 @@ export default function OwnerInfo() {
 
   // user 정보가 로드되면 전화번호를 파싱하여 상태에 저장
   useEffect(() => {
-    if(user) {
+    if (user) {
       setName(user.name);
       setTempName(user.name);
       if (user && user.phoneNumber) {
@@ -76,17 +86,17 @@ export default function OwnerInfo() {
   };
 
   // 수정 완료 버튼
-  const handleUpdateProfile = async() => {
+  const handleUpdateProfile = async () => {
     const payload = {};
     const newPhoneNumber = `${phonePrefix}-${phoneMiddle}-${phoneLast}`;
 
     // 이름관련
-    if(user && user.name !== tempName) {
+    if (user && user.name !== tempName) {
       payload.name = tempName;
     }
 
     // 현재 전화번호와 다를 경우만 수정
-    if(user.phoneNumber !== newPhoneNumber) {
+    if (user.phoneNumber !== newPhoneNumber) {
       payload.phone = newPhoneNumber;
     }
 
@@ -94,7 +104,7 @@ export default function OwnerInfo() {
       alert("수정된 내용이 없습니다.");
       return;
     }
-    
+
     try {
       await dispatch(updateOwnerInfoThunk(payload)).unwrap();
       dispatch(getMeThunk()); // 내 정보 다시 불러오기
@@ -108,7 +118,7 @@ export default function OwnerInfo() {
         onConfirm: () => setIsConfirmModalOpen(false) // '확인' 누르면 모달 닫기
       });
       setIsConfirmModalOpen(true);
-    } catch(err) {
+    } catch (err) {
       const errorMessage = err.data && err.data[0] ? err.data[0] : (err.msg || "정보 수정 중 오류가 발생했습니다.")
       alert(errorMessage)
 
@@ -161,8 +171,8 @@ export default function OwnerInfo() {
       <div className="all-container ownerinfo-container">
         <div className="ownerinfo-profile-header">
           {/* 프로필 이미지 */}
-          <div 
-            className="ownerinfo-profile-img" 
+          <div
+            className="ownerinfo-profile-img"
             style={{ backgroundImage: `url('${profileImageUrl}')` }}
           ></div>
 
@@ -173,9 +183,9 @@ export default function OwnerInfo() {
             </h2>
             <div className="ownerinfo-edit-btn-area">
               <CiEdit className="ownerinfo-edit-icon" />
-              <button 
-                type="button" 
-                className="ownerinfo-profile-name-btn" 
+              <button
+                type="button"
+                className="ownerinfo-profile-name-btn"
                 onClick={handleOpenNameModal}
                 title="이름 수정"
               ></button>
@@ -291,22 +301,22 @@ export default function OwnerInfo() {
       <ConfirmModal
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
-        config={modalConfig}        
+        config={modalConfig}
       />
 
-     {/* 비밀번호 변경 모달 */}
-      <OwnerPwModal 
+      {/* 비밀번호 변경 모달 */}
+      <OwnerPwModal
         isOpen={pwModalOpen}
         onClose={() => setPwModalOpen(false)}
-      /> 
+      />
 
       {/* 이름 수정 모달 호출 */}
-      <NameEditModal 
+      <NameEditModal
         isOpen={isNameModalOpen}
         tempName={tempName}
         setTempName={setTempName}
         onCancel={() => setIsNameModalOpen(false)}
-        onSave={() =>{
+        onSave={() => {
           setName(tempName);
           setIsNameModalOpen(false);
         }} />
