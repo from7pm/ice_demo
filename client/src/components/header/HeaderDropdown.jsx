@@ -18,7 +18,6 @@ export default function HeaderDropdown({ isOpen, onClose, user }) {
       onClose(); // 드롭다운 닫기
       
     } catch(error) {
-      console.error("로그아웃 실패.", error);
       dispatch(clearAuth()); // 리덕스 상태 초기화
       navigate('/');
       onClose();

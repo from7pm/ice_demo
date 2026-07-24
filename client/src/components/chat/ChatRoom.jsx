@@ -74,7 +74,6 @@ const ChatRoom = ({ roomId: rawRoomId, onOpenSidebar, isSidebarOpen, socket }) =
         setPage(targetPage + 1);
       }
     } catch (err) {
-      console.error("메시지 로드 실패:", err);
     } finally {
       setIsLoading(false);
     }
@@ -108,12 +107,10 @@ const ChatRoom = ({ roomId: rawRoomId, onOpenSidebar, isSidebarOpen, socket }) =
               socket.emit("mark_as_read", { roomId, userRole: currentMyRole });
             }
           } catch (readErr) {
-            console.warn("초기 읽음 처리 실패:", readErr);
           }
         }, 300);
 
       } catch (err) { 
-        console.warn("채팅방 초기화 중 오류 발생:", err);
         fetchMessages(1, true);
       }
     };
@@ -194,7 +191,6 @@ const ChatRoom = ({ roomId: rawRoomId, onOpenSidebar, isSidebarOpen, socket }) =
       e.target.value = ''; 
       setTimeout(() => scrollToBottom('smooth'), 100);
     } catch(err) { 
-      console.error("이미지 업로드 실패", err);
       alert("이미지 전송에 실패했습니다.");
     }
   };

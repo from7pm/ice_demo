@@ -84,7 +84,6 @@ export default function ReviewShowModal({ isOpen, onClose, reviewId }) {
   const createImageUrl = (path) => {
     if(!path) return null;
     const imageUrl = `${path.replace(/\\/g, '/')}`;
-    console.log("생성된 이미지 URL:", imageUrl);
     return imageUrl;
   };
 

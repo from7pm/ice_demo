@@ -1,23 +1,49 @@
 import "react-datepicker/dist/react-datepicker.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CiUser } from "react-icons/ci";
 import { MdHomeWork } from "react-icons/md";
 import { LuCalendarClock } from "react-icons/lu";
 import { RiArrowDropDownFill } from "react-icons/ri";
 import { RiArrowDropUpFill } from "react-icons/ri";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import cleanersThunk from "../../store/thunks/cleanersThunk.js";
-import { clearCleaners } from "../../store/slices/cleanersSlice.js";
-import CleanersQuotationsPreparationSave from "./CleanersQuotationsPreparationSave.jsx";
 import "./CleanersUserQuotationsShow.css";
 import styles from "./CleanersUserQuotations.module.css";
 
 function CleanersUserQuotationsShow() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
-  const { reservation, submissions } = useSelector(state => state.cleaners);
+  const reservation = {
+    id: params.id || 'demo-1',
+    isAssign: '신규 요청',
+    date: '2026-07-30',
+    time: '14:00',
+    store: {
+      name: '아이스 카페 중앙점',
+      phoneNumber: '02-1234-5678',
+      addr1: '서울특별시',
+      addr2: '중구 세종대로 110',
+      addr3: '1층'
+    },
+    owner: { name: '김점주' }
+  };
+  const submissions = [
+    {
+      id: 1,
+      questionOptionId: 1,
+      answerText: '1대',
+      question: {
+        code: 'Q1',
+        content: '청소가 필요한 제빙기 수량을 선택해주세요.',
+        questionOptions: [
+          { id: 1, correct: '1대' },
+          { id: 2, correct: '2대' },
+          { id: 3, correct: '3대 이상' }
+        ]
+      }
+    },
+    { id: 2, question: null, answerText: '오후 2시 이후 방문을 희망합니다.' }
+  ];
   const { user } = useSelector(state => state.auth);
   const [toggleDetails, setToggleDetails] = useState(false);
 
@@ -27,8 +53,8 @@ function CleanersUserQuotationsShow() {
 
   // --- 견적서 입력을 위한 상태 관리 ---
   const [quoteData, setQuoteData] = useState({
-    estimatedAmount: null, // 가격 필드명 반영
-    description: ""
+    estimatedAmount: '120000', // 가격 필드명 반영
+    description: "제빙기 1대 분해 세척 및 살균 작업 견적입니다."
   });
 
   // ---  견적서 입력 변경시 스테이트 수정 ---
@@ -36,31 +62,21 @@ function CleanersUserQuotationsShow() {
     setQuoteData({ ...quoteData, [key]: val });
   }
 
-  // form submit handler
-  const handleSubmit = async (e) => {
+  // 데모에서는 서버 요청 없이 견적 내용을 저장하고 목록 페이지로 이동합니다.
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    try {
-      const data = {
-        reservationId: params.id,
-        estimatedAmount: quoteData.estimatedAmount,
-        description: quoteData.description
-      }
-      const result = await dispatch(cleanersThunk.quotationStore(data));
+    const demoQuote = {
+      reservationId: reservation.id,
+      estimatedAmount: quoteData.estimatedAmount || '120000',
+      description: quoteData.description || '제빙기 1대 분해 세척 및 살균 작업 견적입니다.',
+      sentAt: new Date().toISOString()
+    };
 
-      if (result.type.endsWith("/rejected")) {
-        throw result;
-      }
-
-      alert('견적서 요청 승락 성공');
-    } catch (error) {
-      console.error(error);
-      alert('견적서 요청 승락 실패');
-    } finally {
-      navigate('/cleaners/quotations');
-    }
+    localStorage.setItem('iceDoctorDemoSentQuote', JSON.stringify(demoQuote));
+    alert('견적서가 전송되었습니다.');
+    navigate('/cleaners/quotations', { replace: true });
   };
-
 
   // ----------------------------------
   // 모달 관련
@@ -79,20 +95,7 @@ function CleanersUserQuotationsShow() {
   // const closeModal = () => setIsModalOpen(false);
 
 
-  // ----------------------------------
-  // useEffect 관련
-  // ----------------------------------
-  useEffect(() => {
-    (async () => {
-      const result = await dispatch(cleanersThunk.showThunk(params.id));
-      if (result.type.endsWith("/rejected")) {
-        alert("정보 획득 실패");
-        navigate(-1);
-      }
-    })();
 
-    return () => dispatch(clearCleaners());
-  }, [dispatch, navigate, params.id]);
 
   return (
     <>
@@ -123,7 +126,7 @@ function CleanersUserQuotationsShow() {
               <div className="cleaners-user-quotations-items-box-column">
                 <span className="cleaners-user-quotations-items-box-title">첨부파일</span>
                 <div className="cleaners-user-quotations-items-box-images">
-                  <div className="cleaners-user-quotations-items-box-image" style={{ backgroundImage: `url('../../../public/icons/임시1.jpg')` }}></div>
+                  <div className="cleaners-user-quotations-items-box-image" style={{ backgroundImage: `url('/icons/임시1.jpg')` }}></div>
                 </div>
               </div>
 
@@ -168,7 +171,6 @@ function CleanersUserQuotationsShow() {
 
                           {
                             submission.question.questionOptions.map(questionOption => {
-                              console.log('Submission Data:', submission);
                               return (
                                 <div className="cleaners-user-quotations-items-box-question-answer" key={`${submission.id}-${questionOption.id}`}>
                                   <input

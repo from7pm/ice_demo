@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import axiosInstance from "../../api/axiosInstance.js";
 import cleanersThunk from '../../store/thunks/cleanersThunk.js';
 import Select from "react-select";
 import './CleanersRegistration.css';
@@ -85,10 +84,8 @@ export default function CleanersRegistration() {
   // useEffect (데이터 로딩) 
   useEffect(() => {
     if (!isInitialized) {
-      console.log(' isInitialized: false. 초기 데이터 요청을 시작합니다.');
       dispatch(cleanersThunk.locationThunk());
     } else {
-      console.log('데이터가 이미 초기화(로드) 되었으므로 다시 요청하지 않습니다.');
     }
   }, [dispatch, isInitialized]);
 

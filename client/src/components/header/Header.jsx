@@ -23,7 +23,6 @@ export default function Header() {
       try {
         await dispatch(getMeThunk()).unwrap();
       } catch (error) {
-        console.log("비로그인 상태입니다.");
       }
     }
    

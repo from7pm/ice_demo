@@ -75,7 +75,6 @@ export default function OwnerStoreInfo({ onClose, onSubmit }) {
       addr3: addr3,
     };
 
-    console.log("클라이언트가 보내는 데이터:", formattedStoreData);
 
     onSubmit(formattedStoreData); // OwnerInfo.jsx의 handleAddStore로 전달
   };

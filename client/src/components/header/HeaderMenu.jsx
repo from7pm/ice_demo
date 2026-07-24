@@ -15,7 +15,6 @@ export default function HeaderMenu({ isOpen, onClose }) {
       onClose();
       navigate("/");
     } catch (error) {
-      console.error("로그아웃 실패", error);
     }
   };
 

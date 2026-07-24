@@ -71,7 +71,6 @@ export default function CleanersInfoEdit() {
         const accounts = response.data?.data?.rows;
         setHasSettlementAccount(accounts && accounts.length > 0);
       } catch (error) {
-        console.error('계좌 정보 조회 실패:', error);
         setHasSettlementAccount(false);
       } finally {
         setIsAccountLoading(false);

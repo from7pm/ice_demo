@@ -5,7 +5,6 @@ import DatePicker from "../commons/DatePicker";
 import StoreSelectModal from "../commons/StoreSelectModal.jsx";
 import useKakaoPostcode from "../hooks/useKakaoPostcode.js";
 import { storeGetThunk } from '../../store/thunks/storeGetThunk.js';
-import { createReservation } from '../../api/axiosOwner.js';
 import OwnerOption, { RESERVATION_QUESTIONS } from "./OwnerOption.jsx";
 import './OwnerReservation.css';
 
@@ -47,7 +46,6 @@ export default function OwnerReservation() {
     const id = searchParams.get('cleanerId');
     if(id) {
       setCleanerId(id);
-      console.log("OwnerReservation 페이지가 URL에서 추출한 cleanerId:", id);
     }
   }, [location]);
 
@@ -97,67 +95,15 @@ export default function OwnerReservation() {
     setIsStoreModalOpen(false);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!storeName || !address || !startDate || !selectedTime || !agreedToTerms) {
-      alert("필수 항목을 모두 확인해주세요.");
-      return;
-    }
 
+    // 데모 버전에서는 서버로 요청서를 전송하지 않습니다.
+    // 입력 여부와 관계없이 받은 견적 데모 화면으로 이동합니다.
     setLoading(true);
-    try {
-      const formData = new FormData();
-      const formattedDate = startDate instanceof Date ? startDate.toISOString().split('T')[0] : startDate;
-      const formattedTime = selectedTime.split('시')[0].trim().padStart(2, '0') + ':00';
-
-      formData.append("storeId", selectedStoreId || "");
-      formData.append("storeName", storeName);
-      formData.append("phoneNumber", `${phonePrefix}-${phoneMiddle}-${phoneLast}`);
-      formData.append("addr1", address.split(" ")[0]);
-      formData.append("addr2", address.split(" ").slice(1).join(" "));
-      formData.append("addr3", detailAddress);
-      formData.append("date", formattedDate);
-      formData.append("time", formattedTime);
-      formData.append("isDateNegotiable", isDateNegotiable);
-
-      if(cleanerId) {
-        formData.append("cleanerId", cleanerId);
-      }
-
-      const submissions = RESERVATION_QUESTIONS.map(q => {
-        const rawValue = answers[`q${q.id}`];
-        if (!rawValue) return null;
-        return {
-          questionCode: q.code,
-          answer: q.type === "radio" ? (rawValue === 'yes' ? '네' : '아니요') : rawValue
-        };
-      }).filter(Boolean);
-
-      if (additionalRequest.trim()) {
-        submissions.push({ questionCode: 'Q99', answer: additionalRequest });
-      }
-
-      formData.append("submissions", JSON.stringify(submissions));
-      files.forEach(file => formData.append("files", file));
-
-      await createReservation(formData);
-      navigate('/result', { 
-        state: { 
-          title: '전송 완료!', 
-          message: '기사님이 곧 연락드립니다.',
-          imgSrc: '/icons/success.png',
-          button1Text: '홈으로 가기',
-          button1Path: '/',
-          button2Text: '요청서 확인',
-          button2Path: '/owners/mypage',
-          showButton2: true,
-        } 
-      });
-    } catch (err) {
-      alert("전송 중 오류가 발생했습니다.");
-    } finally {
-      setLoading(false);
-    }
+    localStorage.setItem('iceDoctorDemoReservationSubmitted', 'true');
+    alert('요청서가 등록되었습니다. 데모 견적을 확인해주세요.');
+    navigate('/owners/mypage', { replace: true });
   };
 
   return (

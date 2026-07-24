@@ -17,7 +17,6 @@ export default function InquiryList() {
         const data = response.data?.data || response.data || [];
         setInquiries(data);
       } catch (error) {
-        console.error("문의 목록 조회 실패:", error);
       } finally {
         setLoading(false);
       }

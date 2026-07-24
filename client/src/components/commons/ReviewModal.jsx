@@ -72,7 +72,6 @@ export default function ReviewModal({ isOpen, onClose, targetData, onSuccess }) 
         onClose();
       }
     } catch (error) {
-      console.error(error);
       alert("등록 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);

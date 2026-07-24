@@ -22,7 +22,6 @@ export default function TodayJobList() {
         setTodayJobs(response.data.data);
       }
     } catch (error) {
-      console.error("오늘 일정 로드 실패:", error);
     } finally {
       setLoading(false);
     }
@@ -34,7 +33,6 @@ export default function TodayJobList() {
 
   // 작업 완료 처리 함수
   const handleCompleteJob = async (jobId) => {
-    console.log("1. 버튼 클릭됨, ID:", jobId);
     if (!window.confirm("작업을 완료하셨습니까?\n완료 시 정산 대기 상태로 변경됩니다.")) return;
     
     try {
@@ -44,7 +42,6 @@ export default function TodayJobList() {
         fetchTodayJobs();
       }
     } catch (error) {
-      console.error("완료 처리 실패:", error);
       alert("처리 중 오류가 발생했습니다.");
     }
   };

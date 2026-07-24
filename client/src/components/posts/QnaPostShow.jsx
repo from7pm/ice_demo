@@ -32,7 +32,6 @@ export default function QnaPostShow() {
       setShowPasswordPrompt(false);
 
     } catch (err) {
-      console.error("문의글 조회에 실패했습니다.", err);
       
       if (err.response?.data?.code === 'PASSWORD_REQUIRED') {
         setShowPasswordPrompt(true);

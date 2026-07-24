@@ -15,7 +15,6 @@ function CleanersReview() {
         const response = await getCleanerReviews();
         setReviews(response.data?.data || response.data || []);
       } catch (error) {
-        console.error("리뷰 로드 실패:", error);
       } finally {
         setLoading(false);
       }

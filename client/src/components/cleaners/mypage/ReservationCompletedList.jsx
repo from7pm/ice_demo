@@ -24,7 +24,6 @@ export default function ReservationCompletedList() {
         setJobs(response.data.data);
       }
     } catch (error) {
-      console.error("데이터 로드 실패:", error);
     } finally {
       setLoading(false);
     }
@@ -43,7 +42,6 @@ export default function ReservationCompletedList() {
         fetchJobs(); 
       }
     } catch (error) {
-      console.error("완료 처리 실패:", error);
       alert("처리 중 오류가 발생했습니다.");
     }
   };

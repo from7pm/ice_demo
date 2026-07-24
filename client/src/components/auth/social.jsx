@@ -31,7 +31,6 @@ export default function Social() {
         await dispatch(getMeThunk()).unwrap(); 
         navigate('/', { replace: true });
       } catch (error) {
-        console.log('Social', error);
         alert('소셜 로그인 실패');
         navigate('/login', { replace: true });
       }

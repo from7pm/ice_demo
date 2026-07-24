@@ -59,7 +59,6 @@ function CleanersMyPage() {
           }
         }
       } catch (error) {
-        console.error("데이터 로딩 오류:", error);
         setActiveTab('대기 작업');
       }
     };

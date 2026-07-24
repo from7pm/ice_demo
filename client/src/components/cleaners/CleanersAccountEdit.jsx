@@ -92,7 +92,6 @@ function CleanerAccountEdit() {
   // 4. 이벤트 핸들러들
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
     setAccountInfo((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -125,7 +124,6 @@ function CleanerAccountEdit() {
       setIsEditing(false);
 
     } catch (error) {
-      console.error("삭제 실패:", error);
       alert(error || "삭제에 실패했습니다.");
     }
   }

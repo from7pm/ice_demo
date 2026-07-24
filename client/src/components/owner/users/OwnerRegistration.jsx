@@ -167,7 +167,6 @@ export default function OwnerRegistration() {
       });
 
     } catch (error) {
-      console.error('회원가입 오류:', error);
 
       // 실패 모달 설정 (원인에 상관없이 실패 안내만 출력)
       setModalConfig({

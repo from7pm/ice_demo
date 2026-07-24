@@ -56,7 +56,6 @@ export default function ReservationDetail() {
           });
         }
       } catch (error) {
-        console.error("의뢰 상세 로드 실패:", error);
       } finally {
         setLoading(false);
       }

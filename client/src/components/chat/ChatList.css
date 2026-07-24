@@ -103,8 +103,13 @@
 
 /* 리스트 아이템 */
 .chatlist-item {
+  width: 100%;
+  box-sizing: border-box;
+
   display: flex;
+  flex-direction: row;
   align-items: center;
+
   padding: 20px;
   border: 1px solid var(--color-light-gray);
   border-radius: 12px;
@@ -126,6 +131,7 @@
 
 /* 편집 모드 체크박스 영역 */
 .chatlist-edit-checkbox {
+  flex: 0 0 auto;
   margin-right: 15px;
   display: flex;
   align-items: center;
@@ -141,6 +147,8 @@
 .chatlist-avatar {
   width: 50px;
   height: 50px;
+  flex: 0 0 50px;
+
   border-radius: 50%;
   background-color: #d1e1f1;
   display: flex;
@@ -148,7 +156,6 @@
   justify-content: center;
   margin-right: 15px;
   overflow: hidden;
-  flex-shrink: 0; /* 체크박스 생겨도 크기 고정 */
 }
 
 .chatlist-profile-img {
@@ -158,19 +165,24 @@
 }
 
 .chatlist-info {
-  flex: 1;
-  min-width: 0; /* 텍스트 생략(...) 작동을 위해 필수 */
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
 }
 
 .chatlist-info-top {
+  width: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   margin-bottom: 8px;
 }
 
 .chatlist-cleaner-name {
   font-weight: bold;
   font-size: 1rem;
+  white-space: nowrap;
+  word-break: keep-all;
 }
 
 .chatlist-cleaner-name.chatlist-deleted {
@@ -178,28 +190,36 @@
 }
 
 .chatlist-info-bottom {
+  width: 100%;
+  min-width: 0;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 12px;
 }
 
 .chatlist-last-message {
+  flex: 1;
+  min-width: 0;
+  max-width: none;
+
   font-size: 0.9rem;
   color: var(--color-black);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 250px;
+  word-break: keep-all;
 }
 
 .chatlist-meta {
+  flex: 0 0 auto;
+  min-width: 60px;
+
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   justify-content: center;
   gap: 5px;
-  min-width: 60px;
 }
 
 .chatlist-last-time {

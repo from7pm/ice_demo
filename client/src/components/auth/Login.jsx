@@ -21,7 +21,6 @@ export default function Login () {
       const role = response.data.user.role;
       return navigate(role === 'OWNER' ? '/owners/mypage' : '/cleaners/mypage', { replace: true });
     } catch(error) {
-      console.error("Login Error", error);
       const errorMessage = error.message || "로그인에 실패했습니다.";
       const errorCode = error.code ? `(${error.code})` : "";
       alert(`${errorMessage} ${errorCode}`);

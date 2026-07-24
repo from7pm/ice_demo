@@ -10,8 +10,8 @@ const MAX_REGIONS = 5;
 export default function CleanersRegion({
   label = "작업 지역",
   initialRegions = [], // 부모로부터 받은, 현재 기사님이 선택한 지역 ID 배열
-  onRegionChange = () => {}, // 부모에게 변경된 ID 배열을 알릴 함수
-  onLimitReached = () => {}
+  onRegionChange = () => { }, // 부모에게 변경된 ID 배열을 알릴 함수
+  onLimitReached = () => { }
 }) {
   const [open, setOpen] = useState(false);
   const [allLocations, setAllLocations] = useState([]); // API로 받아올 전체 지역 마스터 목록
@@ -23,30 +23,72 @@ export default function CleanersRegion({
     const fetchLocations = async () => {
       try {
         const response = await getLocationsThunk();
-        const locations = Array.isArray(response.data.rows) ? response.data.rows : [];
-        setAllLocations(response.data.rows);
 
-        if(locations.length > 0) {
-          const firstCity = [...new Set(response.data.rows.map(loc => loc.city))][0];
+        const locations = Array.isArray(response?.data?.rows)
+          ? response.data.rows
+          : [];
+
+        setAllLocations(locations);
+
+        if (locations.length > 0) {
+          const firstCity = [...new Set(
+            locations.map((loc) => loc.city)
+          )][0];
+
           setActiveCity(firstCity);
         }
       } catch (error) {
         console.error("지역 목록을 불러오는 데 실패했습니다:", error);
+        setAllLocations([]);
       }
     };
+
     fetchLocations();
   }, []);
 
   // 2. 전체 지역 목록에서 도시/상세지역 목록을 계산합니다.
-  const cities = useMemo(() => [...new Set(allLocations.map(loc => loc.city))], [allLocations]);
-  const activeDistricts = useMemo(() => allLocations.filter(loc => loc.city === activeCity), [allLocations, activeCity]);
+  const cities = useMemo(() => {
+    const locations = Array.isArray(allLocations)
+      ? allLocations
+      : [];
 
-  // 3. 부모가 준 '현재 선택된 지역 ID' (initialRegions)를 화면에 표시할 이름으로 변환합니다.
+    return [...new Set(locations.map((loc) => loc.city))];
+  }, [allLocations]);
+
+  const activeDistricts = useMemo(() => {
+    const locations = Array.isArray(allLocations)
+      ? allLocations
+      : [];
+
+    return locations.filter(
+      (loc) => loc.city === activeCity
+    );
+  }, [allLocations, activeCity]);
+
+  // 3. 선택된 지역 ID를 화면에 표시할 이름으로 변환합니다.
   const selectedLocationDetails = useMemo(() => {
-    return initialRegions.map(id => {
-      const loc = allLocations.find(l => l.id === id);
-      return loc ? { id: loc.id, name: `${loc.city}-${loc.district}` } : null;
-    }).filter(Boolean);
+    const locations = Array.isArray(allLocations)
+      ? allLocations
+      : [];
+
+    const regionIds = Array.isArray(initialRegions)
+      ? initialRegions
+      : [];
+
+    return regionIds
+      .map((id) => {
+        const loc = locations.find(
+          (location) => location.id === id
+        );
+
+        return loc
+          ? {
+            id: loc.id,
+            name: `${loc.city}-${loc.district}`,
+          }
+          : null;
+      })
+      .filter(Boolean);
   }, [initialRegions, allLocations]);
 
   const removeChip = (id) => onRegionChange(initialRegions.filter(regionId => regionId !== id));
@@ -57,8 +99,8 @@ export default function CleanersRegion({
     const newSelected = [...initialRegions];
     const index = newSelected.indexOf(locationId);
 
-    if (index > -1) { 
-      newSelected.splice(index, 1); 
+    if (index > -1) {
+      newSelected.splice(index, 1);
     } else {
       if (newSelected.length >= MAX_REGIONS) {
         onLimitReached();
@@ -191,30 +233,30 @@ export function ConfirmModal({ open, message, onClose, onConfirm }) {
       <div className="cleaners-profile-edit-last-modal-box">
 
         <div className="cleaners-profile-eidt-modal-cancel-submit-text-button">
-        <div className="cleaners-profile-edit-modal-text">
-          {message}
-        </div>
+          <div className="cleaners-profile-edit-modal-text">
+            {message}
+          </div>
 
-        <div className="cleaners-profile-edit-modal-button-row">
-          <button
-            className="cleaners-profile-edit-modal-button"
-            type="button"
-            onClick={onClose}
-            style={{background: "var(--color-light-gray", borderRadius: "5px"}}
-          >
-            취소
-          </button>
+          <div className="cleaners-profile-edit-modal-button-row">
+            <button
+              className="cleaners-profile-edit-modal-button"
+              type="button"
+              onClick={onClose}
+              style={{ background: "var(--color-light-gray", borderRadius: "5px" }}
+            >
+              취소
+            </button>
 
-          <button
-            className="cleaners-profile-edit-modal-button"
-            type="button"
-            onClick={onConfirm}
-            autoFocus
-            style={{background: "var(--color-light-gray", borderRadius: "5px"}}
-          >
-            확인
-          </button>
-        </div>
+            <button
+              className="cleaners-profile-edit-modal-button"
+              type="button"
+              onClick={onConfirm}
+              autoFocus
+              style={{ background: "var(--color-light-gray", borderRadius: "5px" }}
+            >
+              확인
+            </button>
+          </div>
         </div>
 
       </div>

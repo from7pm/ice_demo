@@ -15,7 +15,7 @@ function CleanersProfileEdit() {
 
   // 프로필 정보 상태
   const [tagline, setTagline] = useState("");
-  
+
   // 프로필 이미지 관련 상태
   const [profileImageUrl, setProfileImageUrl] = useState("/icons/default-profile.png");
   const [selectedProfileFile, setSelectedProfileFile] = useState(null);
@@ -34,26 +34,40 @@ function CleanersProfileEdit() {
 
   // 초기 데이터 로드
   useEffect(() => {
-    if(user) {
-      setProfileImageUrl(user.profile || "/icons/default-profile.png");
-      setTagline(user.introduction || user.tagline || "");
+    if (user) {
+      setProfileImageUrl(
+        user.profile || "/icons/default-profile.png"
+      );
 
-      if (user.certifications) {
-        setCertificateFiles(user.certifications.map(cert => ({
+      setTagline(
+        user.introduction || user.tagline || ""
+      );
+
+      const certifications = Array.isArray(user.certifications)
+        ? user.certifications
+        : [];
+
+      setCertificateFiles(
+        certifications.map((cert) => ({
           file: null,
           name: cert.name,
           url: cert.image,
-        })));
-      }
+        }))
+      );
 
-      if (user.driverRegions) {
-        setSelectedRegions(user.driverRegions.map(region => region.locationId));
-      }
-    }
-    else if (isLoggedIn === false && isLoading === false) {
+      const driverRegions = Array.isArray(user.driverRegions)
+        ? user.driverRegions
+        : [];
+
+      setSelectedRegions(
+        driverRegions
+          .map((region) => region.locationId)
+          .filter((id) => id != null)
+      );
+    } else if (!isLoggedIn && !isLoading) {
       dispatch(getMeThunk());
     }
-  }, [user, isLoggedIn, isLoading]);
+  }, [user, isLoggedIn, isLoading, dispatch]);
   // useEffect(() => {
   //   if(!user || isLoaded) return
 
@@ -71,22 +85,18 @@ function CleanersProfileEdit() {
   //       setIsLoaded(true);        
   //     } catch (error) {
   //       if (error?.status === 401) {
-  //         console.log("401 인증 오류 감지. 토큰 재발급을 시도합니다...");
   //         try {
   //           await dispatch(reissueThunk()).unwrap();
 
-  //           console.log("토큰 재발급 성공. 프로필 정보를 다시 가져옵니다.");
   //           const profileData = await dispatch(getCleanerProfileThunk()).unwrap();
   //           setInitialForm(profileData);
   //           setIsLoaded(true);
 
   //         } catch (reissueError) {
-  //           console.error("토큰 재발급 최종 실패. 로그아웃합니다.", reissueError);
   //           alert("세션이 만료되었습니다. 다시 로그인해주세요.");
   //           dispatch(logoutThunk());
   //         }
   //       } else {
-  //         console.error("데이터 로드에 최종적으로 실패했습니다:", error);
   //         alert("사용자 정보를 불러오는 데 실패했습니다. 다시 로그인해주세요.");
   //         setIsLoaded(true);
   //       }
@@ -174,7 +184,7 @@ function CleanersProfileEdit() {
       }
       // 새 자격증 파일 처리
       if (newCertificateFiles.length > 0) {
-        const uploadPromises = newCertificateFiles.map(cert => 
+        const uploadPromises = newCertificateFiles.map(cert =>
           dispatch(uploadFileThunk(cert.file)).unwrap()
         );
         const newCertUrls = await Promise.all(uploadPromises);
@@ -192,7 +202,7 @@ function CleanersProfileEdit() {
         regions: selectedRegions,
       };
 
-      await dispatch(updateCleanerInfoThunk(updateData)).unwrap();      
+      await dispatch(updateCleanerInfoThunk(updateData)).unwrap();
 
       setModalConfig({
         title: '수정 완료',
@@ -223,7 +233,7 @@ function CleanersProfileEdit() {
     });
     setIsConfirmModalOpen(true);
   }
-  
+
   return (
     <div className="cleaner-profile-edit-container">
       <div className="cleaner-profile-edit-card">
@@ -235,12 +245,12 @@ function CleanersProfileEdit() {
               style={{ backgroundImage: `url('${profileImageUrl}')` }}
             />
             <label htmlFor="profile-upload" className="cleaner-profile-edit-badge" />
-            <input 
-              id="profile-upload" 
-              type="file" 
-              style={{ display: "none" }} 
-              accept="image/*" 
-              onChange={handleImageSelect} 
+            <input
+              id="profile-upload"
+              type="file"
+              style={{ display: "none" }}
+              accept="image/*"
+              onChange={handleImageSelect}
             />
           </div>
 
@@ -275,18 +285,18 @@ function CleanersProfileEdit() {
             ))}
             <div className="cleaner-profile-edit-file-row">
               <label htmlFor="cert-upload" className="cleaner-profile-edit-btn-upload">파일 추가</label>
-              <input 
-                id="cert-upload" 
-                type="file" 
-                multiple 
-                style={{ display: 'none' }} 
-                onChange={handleFileChange} 
+              <input
+                id="cert-upload"
+                type="file"
+                multiple
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
               />
             </div>
           </div>
 
           <div className="cleaner-profile-edit-field">
-            <CleanersRegion 
+            <CleanersRegion
               label="작업 지역"
               initialRegions={selectedRegions}
               onRegionChange={setSelectedRegions}
@@ -310,7 +320,7 @@ function CleanersProfileEdit() {
         <div className="cleaner-profile-edit-modal-overlay">
           <div className="cleaner-profile-edit-modal-content">
             <h3>프로필 이미지 미리보기</h3>
-            <img src={previewUrl} alt="미리보기" className="cleaner-profile-edit-modal-preview-img"/>
+            <img src={previewUrl} alt="미리보기" className="cleaner-profile-edit-modal-preview-img" />
             <div className="cleaner-profile-edit-modal-btns">
               <button onClick={() => setIsImgModalOpen(false)} className="cleaner-profile-edit-modal-btn-cancel">
                 취소

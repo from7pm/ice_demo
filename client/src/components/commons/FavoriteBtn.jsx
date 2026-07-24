@@ -22,7 +22,6 @@ export default function FavoriteButton({ cleanerId, initialIsFavorited, onToggle
         onToggle(cleanerId, response.isFavorited);
       }
     } catch (error) {
-      console.error('좋아요 상태 토글 실패:', error);
     } finally {
       setLoading(false);
     }

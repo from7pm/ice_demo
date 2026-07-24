@@ -72,7 +72,6 @@ export default function SocialLoginInfo() {
       })
     };
 
-    console.log("전송 데이터:", finalData);
 
     try {
       const response = await axiosInstance.post('/api/auth/signup/complete', finalData);
@@ -88,7 +87,6 @@ export default function SocialLoginInfo() {
         }
       }
     } catch (error) {
-      console.error("handleSubmit 에러 발생:", error);
       const errorMessage = error.response?.data?.message || "등록 중 오류가 발생했습니다.";
       alert(`등록 알림: ${errorMessage}`);
     }

@@ -137,7 +137,6 @@ export default function PostCreate() {
       await apiCallFunction(formData);
       navigate(navigatePath, { state: resultPageState });
     } catch (error) {
-      console.error("문의 등록 실패:", error);
       alert('문의 등록에 실패했습니다. 다시 시도해주세요.');
     }
   }

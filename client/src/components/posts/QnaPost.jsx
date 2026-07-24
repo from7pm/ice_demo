@@ -48,7 +48,6 @@ export default function QnaPost () {
         setInquiries(response.data.rows);
         setTotalCount(response.data.count);
       } catch (err) {
-        console.error("문의 목록 불러오기 실패:", err);
         setError(err);
       } finally {
         setLoading(false);

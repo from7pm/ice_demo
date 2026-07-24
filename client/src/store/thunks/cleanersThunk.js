@@ -1,115 +1,87 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import axiosInstance from "../../api/axiosInstance.js";
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
-const locationThunk = createAsyncThunk(
-  'cleaners/locationThunk',
-  async (_, { rejectWithValue }) => {
-    try {
-      const url = '/api/users/locations';
-      const response = await axiosInstance.get(url);
+const today = new Date();
+const ymd = (date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+};
 
-      return response.data;
-    } catch (error) {
+const demoLocations = {
+  rows: [
+    { id: 1, city: '서울특별시', district: '전체' },
+    { id: 2, city: '대구광역시', district: '중구' },
+    { id: 3, city: '부산광역시', district: '해운대구' },
+  ],
+};
 
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
+const demoReservations = [
+  {
+    id: 301,
+    date: ymd(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3)),
+    time: '11:00:00',
+    status: 'REQUESTED',
+    store: { name: '카페 라임', addr1: '서울특별시 성동구 왕십리로 10' },
+    owner: { name: '최점주' },
+  },
+  {
+    id: 302,
+    date: ymd(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 5)),
+    time: '15:30:00',
+    status: 'REQUESTED',
+    store: { name: '브리즈 커피', addr1: '서울특별시 강남구 테헤란로 20' },
+    owner: { name: '정점주' },
+  },
+];
 
-const indexThunk = createAsyncThunk(
-  'cleaners/indexThunk',
-  async (_, { rejectWithValue, getState }) => {
-    try {
-      const { cleaners } = getState();
-      const { page, offset } = cleaners;
-      const url = `/api/cleaners/quotations`;
-      const params = {
-        page: page + 1,
-        offset
-      };
+const locationThunk = createAsyncThunk('cleaners/locationThunk', async () => demoLocations);
 
-      const response = await axiosInstance.get(url, { params });
+const indexThunk = createAsyncThunk('cleaners/indexThunk', async (_, { getState }) => {
+  const currentPage = (getState()?.cleaners?.page || 0) + 1;
+  return {
+    success: true,
+    data: {
+      total: demoReservations.length,
+      currentPage,
+      reservations: currentPage === 1 ? demoReservations : [],
+    },
+  };
+});
 
-      return response.data;
-    } catch (error) {
-      // 에러 처리 시, HTTP 응답의 데이터를 포함하여 디버깅에 용이하게 합니다.
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
+const showThunk = createAsyncThunk('cleaners/showThunk', async (id) => {
+  const reservation = demoReservations.find((item) => String(item.id) === String(id)) || demoReservations[0];
+  return {
+    success: true,
+    data: {
+      reservation: {
+        ...reservation,
+        description: '제빙기 내부 전체 세척과 살균을 요청합니다.',
+      },
+      submissions: [
+        { question: { content: '제빙기 종류' }, answerText: '업소용 공랭식' },
+        { question: { content: '희망 작업 시간' }, answerText: '영업 시작 전' },
+      ],
+      locations: demoLocations,
+    },
+  };
+});
 
-const showThunk = createAsyncThunk(
-  'cleaners/showThunk',
-  async (id, { rejectWithValue }) => {
-    try {
-      const url = `/api/owners/quotations/${id}`;
-      const response = await axiosInstance.get(url);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
+const fetchAccounts = createAsyncThunk('cleaners/fetchAccounts', async () => ({
+  data: {
+    id: 1,
+    bank: '국민은행',
+    accountNumber: '123456-78-901234',
+    accountHolder: '이기사',
+  },
+}));
 
-// 계좌 목록 조회
-const fetchAccounts = createAsyncThunk(
-  'cleaners/fetchAccounts',
-  async function (_, { rejectWithValue }) {
-    try {
-      const url = `/api/cleaners/accountedit`;
-      const response = await axiosInstance.get(url);
+export const saveAccount = createAsyncThunk('cleaners/saveAccount', async (accountData) => ({
+  data: { id: 1, ...accountData },
+}));
 
-      return response.data;
-    } catch (error) {
-
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
-
-// 계좌 등록 및 수정
-export const saveAccount = createAsyncThunk(
-  'cleaners/saveAccount',
-  async function (accountData, { rejectWithValue }) {
-    try {
-      const url = `/api/cleaners/accountedit`;
-
-      const response = await axiosInstance.post(url, accountData);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
-
-
-// 계좌 삭제
-const deleteAccount = createAsyncThunk(
-  'cleaners/deleteAccount',
-  async function (_, { rejectWithValue }) {
-    try {
-      const url = `/api/cleaners/accountedit`;
-      const response = await axiosInstance.delete(url);
-
-      return response.data;
-    } catch (error) {
-
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
-
-const quotationStore = createAsyncThunk(
-  'cleaners/quotationStore',
-  async (data, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post(`/api/cleaners/quotations`, data);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.msg || "견적서 요청 승락 실패");
-    }
-  }
-);
+const deleteAccount = createAsyncThunk('cleaners/deleteAccount', async () => ({ success: true }));
+const quotationStore = createAsyncThunk('cleaners/quotationStore', async (data) => ({ success: true, data }));
 
 export default {
   indexThunk,
